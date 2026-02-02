@@ -157,8 +157,8 @@ public class ItemController {
 			// 기존의 있는 외부저장소에 있는 파일을 삭제
 			Item oldItem = itemService.read(item);
 			oldUrl = oldItem.getUrl();
-			
-			// 새로 등록 할 파일 
+
+			// 새로 등록 할 파일
 			log.info("originalName: " + file.getOriginalFilename());
 			log.info("size: " + file.getSize());
 			log.info("contentType: " + file.getContentType());
@@ -166,17 +166,33 @@ public class ItemController {
 			item.setUrl(createdFileName);
 		}
 		int count = itemService.update(item);
-		
+
 		if (count > 0) {
 			// 테이블에 수정내용이 완료가 되고 그리고 나서 이전 이미지 파일을 삭제한다.
-			if(oldUrl != null)	deleteFile(oldUrl);
+			if (oldUrl != null)
+				deleteFile(oldUrl);
 			model.addAttribute("message", "%s 상품 수정이 성공되었습니다.".formatted(item.getName()));
 			return "item/success";
 		}
 		model.addAttribute("message", "%s 상품 수정이 실패되었습니다.".formatted(item.getName()));
 		return "item/failed";
 	}
-	
+
+	@GetMapping("/delete")
+	public String itemDelte(Item item, Model model) throws Exception {
+		log.info("itemDelte" + item.toString());
+		String url = itemService.getPicture(item);
+		int count = itemService.delete(item);
+		if (count > 0) {
+			if (url != null) {
+				deleteFile(url);
+				model.addAttribute("message", "%s 상품 삭제 성공되었습니다.".formatted(item.getId()));
+				return "item/success";
+			}
+		}
+		model.addAttribute("message", "%s 상품 삭제 실패되었습니다.".formatted(item.getId()));
+		return "item/failed";
+	}
 
 	// 외부저장소 자료업로드 파일명생성후 저장
 	// D:/upload/"../window/system.ini" 디렉토리 탈출공격(path tarversal)
@@ -187,8 +203,6 @@ public class ItemController {
 		File file = new File(uploadPath, fileName);
 		return (file.exists() == true) ? (file.delete()) : (false);
 	}
-
-	
 
 	private MediaType getMediaType(String form) {
 		String formatName = form.toUpperCase();

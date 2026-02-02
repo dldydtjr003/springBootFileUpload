@@ -38,8 +38,8 @@ public class ItemServiceImpl implements ItemService {
 	@Override
 	@Transactional
 	public int delete(Item item) throws Exception {
-		// TODO Auto-generated method stub
-		return 0;
+		int count = mapper.delete(item);
+		return count;
 	}
 
 	@Override
