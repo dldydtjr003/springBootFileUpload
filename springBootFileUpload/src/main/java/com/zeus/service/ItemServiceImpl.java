@@ -1,0 +1,57 @@
+package com.zeus.service;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.zeus.domain.Item;
+import com.zeus.mapper.ItemMapper;
+
+@Service
+public class ItemServiceImpl implements ItemService {
+
+	@Autowired
+	private ItemMapper mapper;
+	
+	@Override
+	@Transactional
+	public int create(Item item) throws Exception {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public Item read(Integer itemId) throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	@Transactional
+	public int update(Item item) throws Exception {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	@Transactional
+	public int delete(Integer itemId) throws Exception {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public List<Item> list() throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String getPicture(Integer itemId) throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+}
