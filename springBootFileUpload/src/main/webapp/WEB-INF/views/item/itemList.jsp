@@ -194,44 +194,30 @@ body {
 			<a href="/item/itemList" class="btn-write">상품 리스트</a> <a
 				href="/item/createForm" class="btn-write">상품 등록</a>
 		</div>
-		<div class="search-container">
-			<form action="/item/search" method="get" class="search-form">
-				<select name="searchType" class="search-select">
-					<option value="name">NAME</option>
-					<option value="id">ID</option>
-				</select> <input type="text" name="keyword" class="search-input" placeholder="Search mission...">
-				<button type="submit" class="btn-search">SEARCH</button>
-			</form>
-		</div>
-
+		
 		<table class="t1-table">
 			<thead>
 				<tr>
-					<th width="10%">No</th>
-					<th width="20%">ID</th>
-					<th width="20%">PASSWORD</th>
-					<th width="20%">NAME</th>
-					<th width="30%">DATE</th>
+					<th width="20%">Id</th>
+					<th width="40%">Name</th>
+					<th width="40%">Price</th>
 				</tr>
 			</thead>
 			<tbody>
 				<c:choose>
-					<c:when test="${not empty memberList}">
-						<c:forEach var="member" items="${memberList}">
+					<c:when test="${not empty itemList}">
+						<c:forEach var="item" items="${itemList}">
 							<tr>
-								<td>${member.no}</td>
+								<td>${item.id}</td>
 								<td class="title-cell"><a
-									href="/member/detail?no=${member.no}">${member.id}</a></td>
-								<td>${member.pw}</td>
-								<td>${member.name}</td>
-								<td><fmt:formatDate value="${member.regDate}"
-										pattern="yyyy.MM.dd" /></td>
+									href="/item/detail?no=${item.id}">${item.name}</a></td>
+								<td>${item.price}</td>
 							</tr>
 						</c:forEach>
 					</c:when>
 					<c:otherwise>
 						<tr>
-							<td colspan="5" style="padding: 50px; color: #555;">등록된 회원이
+							<td colspan="3" style="padding: 50px; color: #555;">등록된 상품이
 								없습니다.</td>
 						</tr>
 					</c:otherwise>

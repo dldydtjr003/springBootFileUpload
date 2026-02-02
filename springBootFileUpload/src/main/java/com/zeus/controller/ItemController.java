@@ -1,6 +1,7 @@
 package com.zeus.controller;
 
 import java.io.File;
+import java.util.List;
 import java.util.UUID;
 
 import org.mybatis.spring.annotation.MapperScan;
@@ -76,6 +77,20 @@ public class ItemController {
 		// return값은 DB에 넣는다.
 		return createdFileName;
 	}
-
+	@GetMapping("/itemList")
+	public String list(Model model,Item item) throws Exception { 
+		log.info("list item =" + item.toString());
+		List<Item> itemList = itemService.list(); 
+		model.addAttribute("itemList", itemList);
+		return "item/itemList";
+		} 
+	
+	@GetMapping("/detail")
+	public String itemDetail(Item i, Model model) throws Exception { 
+		log.info("itemDetail item =" + i.toString());
+		Item item = itemService.detail
+		return "item/itemList";
+	} 
+	
 	
 }
