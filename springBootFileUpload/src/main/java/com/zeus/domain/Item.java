@@ -12,7 +12,7 @@ public class Item implements Serializable{
 	
 	private Integer id;
 	private String name;
-	private Integer number;
+	private Integer price;
 	private String description;
 	private String url;
 	
