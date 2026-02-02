@@ -18,40 +18,40 @@ public class ItemServiceImpl implements ItemService {
 	@Override
 	@Transactional
 	public int create(Item item) throws Exception {
-		// TODO Auto-generated method stub
-		return 0;
+		int count = mapper.create(item);
+		return count;
 	}
 
 	@Override
-	public Item read(Integer itemId) throws Exception {
-		// TODO Auto-generated method stub
-		return null;
+	public Item read(Item i) throws Exception {
+		Item item = mapper.read(i);
+		return item;
 	}
 
 	@Override
 	@Transactional
 	public int update(Item item) throws Exception {
-		// TODO Auto-generated method stub
-		return 0;
+		int count = mapper.update(item);
+		return count;
 	}
 
 	@Override
 	@Transactional
-	public int delete(Integer itemId) throws Exception {
-		// TODO Auto-generated method stub
-		return 0;
+	public int delete(Item item) throws Exception {
+		int count = mapper.delete(item);
+		return count;
 	}
 
 	@Override
 	public List<Item> list() throws Exception {
-		// TODO Auto-generated method stub
-		return null;
+		List<Item> itemList = mapper.list();
+		return itemList;
 	}
 
 	@Override
-	public String getPicture(Integer itemId) throws Exception {
-		// TODO Auto-generated method stub
-		return null;
+	public String getPicture(Item item) throws Exception {
+		String url = mapper.getPicture(item);
+		return url;
 	}
 
 }
