@@ -1,18 +1,26 @@
 package com.zeus.controller;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.util.List;
 import java.util.UUID;
 
+import org.apache.commons.io.IOUtils;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.zeus.domain.Item;
@@ -28,7 +36,7 @@ public class ItemController {
 
 	@Autowired
 	private ItemService itemService;
-	
+
 	// application.properties 에서 upload.path에 저장된 값 주입한다.
 	@Value("${upload.path}")
 	private String uploadPath;
@@ -50,47 +58,102 @@ public class ItemController {
 		log.info("contentType: " + file.getContentType());
 		// 3. 파일을 외장하드에 저장하기
 		String createdFileName = uploadFile(file.getOriginalFilename(), file.getBytes());
-		// file.getOriginalFilename() -> originalName, file.getBytes() -> fileData로 들어간다.
+		// file.getOriginalFilename() -> originalName, file.getBytes() -> fileData로
+		// 들어간다.
 		// 4. 새로 생성된 파일명을 item domain에 저장
 		item.setUrl(createdFileName);
 		// 5. DB 테이블에 상품화면 정보를 저장
 		int count = itemService.create(item);
-		
-		if(count > 0) {
-			model.addAttribute("message","%s 상품 등록이 성공되었습니다.".formatted(file.getOriginalFilename()));
+
+		if (count > 0) {
+			model.addAttribute("message", "%s 상품 등록이 성공되었습니다.".formatted(file.getOriginalFilename()));
 			return "item/success";
 		}
-		model.addAttribute("message","%s 상품 등록이 실패되었습니다.".formatted(file.getOriginalFilename()));
+		model.addAttribute("message", "%s 상품 등록이 실패되었습니다.".formatted(file.getOriginalFilename()));
 		return "item/failed";
 	}
 
 	private String uploadFile(String originalName, byte[] fileData) throws Exception {
-		// randomUUID 절대 중복이 일어나지 않는다. (이름이 같아도 상관없음) UUID = 0ee131f0-77c3-48d5-b5f4-86a0a215a1dd
+		// randomUUID 절대 중복이 일어나지 않는다. (이름이 같아도 상관없음) UUID =
+		// 0ee131f0-77c3-48d5-b5f4-86a0a215a1dd
 		UUID uid = UUID.randomUUID();
 		// 0ee131f0-77c3-48d5-b5f4-86a0a215a1dd_123.jpg
 		String createdFileName = uid.toString() + "_" + originalName;
 		// new File("D:.upload", 0ee131f0-77c3-48d5-b5f4-86a0a215a1dd_123.jpg)
 		// D:/upload/0ee131f0-77c3-48d5-b5f4-86a0a215a1dd_123.jpg 내용이 없는 파일명만 생성
 		File target = new File(uploadPath, createdFileName);
-		// byte[] fileData = 파일 내용값이 있는 이미지를 D:/upload/0ee131f0-77c3-48d5-b5f4-86a0a215a1dd_123.jpg 여기에 복사 진행 
+		// byte[] fileData = 파일 내용값이 있는 이미지를
+		// D:/upload/0ee131f0-77c3-48d5-b5f4-86a0a215a1dd_123.jpg 여기에 복사 진행
 		FileCopyUtils.copy(fileData, target);
 		// return값은 DB에 넣는다.
 		return createdFileName;
 	}
+
 	@GetMapping("/itemList")
-	public String list(Model model,Item item) throws Exception { 
+	public String list(Model model, Item item) throws Exception {
 		log.info("list item =" + item.toString());
-		List<Item> itemList = itemService.list(); 
+		List<Item> itemList = itemService.list();
 		model.addAttribute("itemList", itemList);
 		return "item/itemList";
-		} 
-	
+	}
+
 	@GetMapping("/detail")
-	public String itemDetail(Item i, Model model) throws Exception { 
+	public String itemDetail(Item i, Model model) throws Exception {
 		log.info("itemDetail item =" + i.toString());
-		Item item = itemService.detail
-		return "item/itemList";
-	} 
-	
-	
+		Item item = itemService.read(i);
+		model.addAttribute("item", item);
+		return "item/detail";
+	}
+
+	// 화면을 요청하는것이 아니고, 데이터를 보내줄 것을 요청.
+	@ResponseBody
+	@GetMapping("/display")
+	public ResponseEntity<byte[]> itemDisplay(Item item) throws Exception {
+		log.info("itemDisplay : ");
+		// 파일을 읽기위한 스트림
+		InputStream in = null;
+		ResponseEntity<byte[]> entity = null;
+
+		String url = itemService.getPicture(item);
+		log.info("url : " + url);
+		try {
+			// 파일명의 확장자를 가져온다. String formatName = "jpg";
+			String formatName = url.substring(url.lastIndexOf(".") + 1);
+			// 확장자가 jpg라면 MediaType mType 
+			MediaType mType = getMediaType(formatName);
+			// 클라이언트 <-> 서버(header, body)
+			HttpHeaders headers = new HttpHeaders();
+			// 이미지 파일을 inputstream으로 가져온다. 			
+			in = new FileInputStream(uploadPath + File.separator + url);
+			// 이미지파일 타입이 null이 아니라면, 헤더에 이미지 타입을 저장한다.
+			if (mType != null) {
+				headers.setContentType(mType);
+			}
+			// IOUtils.toByteArray(in) : inputstram 저장된 파일을 byte[] 변환한다.
+			entity = new ResponseEntity<byte[]>(IOUtils.toByteArray(in), headers, HttpStatus.CREATED);
+		} catch (Exception e) {
+			e.printStackTrace();
+			entity = new ResponseEntity<byte[]>(HttpStatus.BAD_REQUEST);
+		} finally {
+			in.close();
+		}
+		return entity;
+	}
+
+	private MediaType getMediaType(String form) {
+		String formatName = form.toUpperCase();
+		if (formatName != null) {
+			if (formatName.equals("JPG")) {
+				return MediaType.IMAGE_JPEG;
+			}
+			if (formatName.equals("GIF")) {
+				return MediaType.IMAGE_GIF;
+			}
+			if (formatName.equals("PNG")) {
+				return MediaType.IMAGE_PNG;
+			}
+		}
+		return null;
+	}
+
 }

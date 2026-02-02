@@ -210,7 +210,7 @@ body {
 							<tr>
 								<td>${item.id}</td>
 								<td class="title-cell"><a
-									href="/item/detail?no=${item.id}">${item.name}</a></td>
+									href="/item/detail?id=${item.id}">${item.name}</a></td>
 								<td>${item.price}</td>
 							</tr>
 						</c:forEach>

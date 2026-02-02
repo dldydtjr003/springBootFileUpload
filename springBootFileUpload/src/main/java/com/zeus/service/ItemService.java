@@ -7,9 +7,9 @@ import com.zeus.domain.Item;
 public interface ItemService {
 
 	public int create(Item item) throws Exception; 
-	public Item read(Integer itemId) throws Exception; 
+	public Item read(Item item) throws Exception; 
 	public int update(Item item) throws Exception; 
-	public int delete(Integer itemId) throws Exception; 
+	public int delete(Item item) throws Exception; 
 	public List<Item> list() throws Exception; 
-	public String getPicture(Integer itemId) throws Exception; 
+	public String getPicture(Item item) throws Exception; 
 }
