@@ -119,11 +119,11 @@ public class ItemController {
 		try {
 			// 파일명의 확장자를 가져온다. String formatName = "jpg";
 			String formatName = url.substring(url.lastIndexOf(".") + 1);
-			// 확장자가 jpg라면 MediaType mType 
+			// 확장자가 jpg라면 MediaType mType
 			MediaType mType = getMediaType(formatName);
 			// 클라이언트 <-> 서버(header, body)
 			HttpHeaders headers = new HttpHeaders();
-			// 이미지 파일을 inputstream으로 가져온다. 			
+			// 이미지 파일을 inputstream으로 가져온다.
 			in = new FileInputStream(uploadPath + File.separator + url);
 			// 이미지파일 타입이 null이 아니라면, 헤더에 이미지 타입을 저장한다.
 			if (mType != null) {
@@ -139,6 +139,56 @@ public class ItemController {
 		}
 		return entity;
 	}
+
+	@GetMapping("/updateForm")
+	public String itemUpdateForm(Item i, Model model) throws Exception {
+		log.info("updateForm");
+		Item item = this.itemService.read(i);
+		model.addAttribute("item", item);
+		return "item/updateForm";
+	}
+
+	@PostMapping("/update")
+	public String itemUpdate(Item item, Model model) throws Exception {
+		log.info("itemUpdate" + item.toString());
+		MultipartFile file = item.getPicture();
+		String oldUrl = null;
+		if (file != null && file.getSize() > 0) {
+			// 기존의 있는 외부저장소에 있는 파일을 삭제
+			Item oldItem = itemService.read(item);
+			oldUrl = oldItem.getUrl();
+			
+			// 새로 등록 할 파일 
+			log.info("originalName: " + file.getOriginalFilename());
+			log.info("size: " + file.getSize());
+			log.info("contentType: " + file.getContentType());
+			String createdFileName = uploadFile(file.getOriginalFilename(), file.getBytes());
+			item.setUrl(createdFileName);
+		}
+		int count = itemService.update(item);
+		
+		if (count > 0) {
+			// 테이블에 수정내용이 완료가 되고 그리고 나서 이전 이미지 파일을 삭제한다.
+			if(oldUrl != null)	deleteFile(oldUrl);
+			model.addAttribute("message", "%s 상품 수정이 성공되었습니다.".formatted(item.getName()));
+			return "item/success";
+		}
+		model.addAttribute("message", "%s 상품 수정이 실패되었습니다.".formatted(item.getName()));
+		return "item/failed";
+	}
+	
+
+	// 외부저장소 자료업로드 파일명생성후 저장
+	// D:/upload/"../window/system.ini" 디렉토리 탈출공격(path tarversal)
+	private boolean deleteFile(String fileName) throws Exception {
+		if (fileName.contains("..")) {
+			throw new IllegalArgumentException("잘못된 경로 입니다.");
+		}
+		File file = new File(uploadPath, fileName);
+		return (file.exists() == true) ? (file.delete()) : (false);
+	}
+
+	
 
 	private MediaType getMediaType(String form) {
 		String formatName = form.toUpperCase();

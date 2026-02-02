@@ -217,7 +217,7 @@ body {
 					</c:when>
 					<c:otherwise>
 						<tr>
-							<td colspan="3" style="padding: 50px; color: #555;">등록된 상품이
+							<td colspan="5" style="padding: 50px; color: #555;">등록된 상품이
 								없습니다.</td>
 						</tr>
 					</c:otherwise>

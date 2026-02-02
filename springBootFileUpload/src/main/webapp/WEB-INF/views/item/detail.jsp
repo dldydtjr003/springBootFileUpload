@@ -1,8 +1,5 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -13,202 +10,199 @@
 	--t1-red: #E2012D;
 	--t1-black: #0f0f0f;
 	--t1-gray: #1a1a1a;
+	--t1-light-gray: #252525;
 	--t1-gold: #C69C6D;
 }
 
 body {
 	background-color: var(--t1-black);
-	font-family: 'Pretendard', sans-serif;
+	font-family: 'Pretendard', -apple-system, sans-serif;
 	color: #ffffff;
 	margin: 0;
-	padding: 50px 0;
+	padding: 80px 0;
+	display: flex;
+	justify-content: center;
 }
 
 .detail-container {
-	max-width: 800px;
-	margin: 0 auto;
+	width: 900px;
 	background: var(--t1-gray);
-	border: 2px solid var(--t1-red);
-	border-radius: 15px;
-	box-shadow: 0 0 30px rgba(226, 1, 45, 0.2);
+	border: 1px solid rgba(226, 1, 45, 0.3);
+	border-radius: 20px;
+	box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
 	overflow: hidden;
 }
 
-/* 상단 헤더 영역 */
-.detail-header {
-	background: #222;
-	padding: 30px;
-	border-bottom: 1px solid #333;
-}
-
-.detail-header .post-no {
-	color: var(--t1-red);
-	font-weight: bold;
-	font-size: 0.9rem;
-	margin-bottom: 10px;
-	display: block;
-}
-
-.detail-header h1 {
-	margin: 0;
-	font-size: 1.8rem;
-	letter-spacing: -1px;
-}
-
-.post-info {
-	margin-top: 15px;
-	font-size: 0.9rem;
-	color: #888;
+/* 상단 섹션: 이미지 + 정보 레이아웃 */
+.main-info-section {
 	display: flex;
-	gap: 20px;
-}
-
-.post-info span b {
-	color: var(--t1-gold);
-}
-
-/* 본문 영역 */
-.detail-content {
-	padding: 40px 30px;
-	min-height: 100px;
-	line-height: 1.8;
-	font-size: 1.1rem;
-	white-space: pre-wrap; /* 줄바꿈 유지 */
+	padding: 40px;
+	gap: 40px;
 	border-bottom: 1px solid #333;
+}
+
+/* 이미지 영역 */
+.image-area {
+	flex: 1;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.image-area img {
+	width: 100%;
+	max-width: 350px;
+	border-radius: 12px;
+	box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+	border: 1px solid #333;
+	transition: transform 0.3s ease;
+}
+
+.image-area img:hover {
+	transform: scale(1.02);
+}
+
+/* 텍스트 정보 영역 */
+.info-area {
+	flex: 1.2;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+}
+
+.post-no {
+	color: var(--t1-red);
+	font-weight: 800;
+	font-size: 0.85rem;
+	letter-spacing: 1px;
+	text-transform: uppercase;
+	margin-bottom: 8px;
+}
+
+.info-area h1 {
+	margin: 0 0 20px 0;
+	font-size: 2.2rem;
+	font-weight: 700;
+	color: #fff;
+	line-height: 1.2;
+}
+
+.price-box {
+	background: var(--t1-light-gray);
+	padding: 20px;
+	border-radius: 10px;
+	border-left: 4px solid var(--t1-gold);
+}
+
+.price-label {
+	display: block;
+	font-size: 0.8rem;
+	color: #888;
+	margin-bottom: 5px;
+	text-transform: uppercase;
+}
+
+.price-value {
+	font-size: 1.8rem;
+	color: var(--t1-gold);
+	font-weight: 800;
 }
 
 /* 하단 버튼 영역 */
 .btn-area {
-	padding: 20px 30px;
-	background: #151515;
+	padding: 25px 40px;
+	background: #111;
 	display: flex;
 	justify-content: space-between;
+	align-items: center;
 }
 
 .btn {
-	padding: 10px 25px;
-	font-weight: bold;
-	border-radius: 5px;
+	padding: 12px 28px;
+	font-weight: 700;
+	border-radius: 8px;
 	text-decoration: none;
-	transition: 0.3s;
-	cursor: pointer;
-	border: none;
-	font-size: 0.9rem;
+	transition: all 0.2s ease;
+	font-size: 0.95rem;
+	display: inline-block;
 }
 
 .btn-list {
+	background: transparent;
+	color: #aaa;
+	border: 1px solid #444;
+}
+
+.btn-list:hover {
 	background: #333;
 	color: #fff;
 }
 
-.btn-list:hover {
-	background: #444;
-}
-
 .btn-group {
 	display: flex;
-	gap: 10px;
+	gap: 12px;
 }
 
 .btn-edit {
-	background: var(--t1-gold);
-	color: #000;
-}
-
-.btn-delete {
 	background: var(--t1-red);
 	color: #fff;
 }
 
+.btn-cancel {
+	background: #333;
+	color: #ccc;
+}
+
 .btn:hover {
-	transform: translateY(-2px);
-	opacity: 0.9;
-}
-/* 권한 선택 영역 스타일 */
-.btn-form {
-    padding: 20px 30px;
-    background: #1a1a1a;
-    border-top: 1px solid #333;
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
+	transform: translateY(-3px);
+	box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
 }
 
-.btn-form select {
-    width: 100%;
-    padding: 12px 15px;
-    background: #0f0f0f;
-    border: 1px solid #444;
-    border-radius: 5px;
-    color: #ccc;
-    font-size: 0.9rem;
-    font-family: 'Pretendard', sans-serif;
-    appearance: none; /* 기본 화살표 제거 (선택사항) */
-    cursor: default;
-    transition: 0.3s;
+.btn-edit:hover {
+	background: #ff0033;
 }
 
-/* disabled 상태일 때의 스타일 강조 */
-.btn-form select:disabled {
-    background: #111;
-    color: var(--t1-gold); /* 읽기 전용일 때 골드 포인트 */
-    border-color: #333;
-    opacity: 0.8;
-}
-
-/* select 박스 사이의 간격 및 라벨 느낌의 효과 */
-.btn-form select:focus {
-    outline: none;
-    border-color: var(--t1-red);
-    box-shadow: 0 0 10px rgba(226, 1, 45, 0.2);
-}
-
-/* 폼 내부 레이아웃 정렬 */
-.btn-form form {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-/* 데코레이션 */
+/* 푸터 데코 */
 .footer-deco {
-	padding: 15px;
+	padding: 20px;
 	text-align: center;
-	font-size: 0.75rem;
+	font-size: 0.7rem;
 	color: #444;
-	background: #0f0f0f;
+	background: #0a0a0a;
+	letter-spacing: 2px;
+	border-top: 1px solid #1a1a1a;
 }
 </style>
 </head>
 <body>
 
 	<div class="detail-container">
-		<div class="detail-header">
-			<span class="post-no">상품아이디 ${item.id}</span>
-			<h1>${item.name}</h1>
-			<div class="post-info">
-				<span>price: <b>${item.price}</b></span> 
-			</div>
-		</div>
-
-		
-		<div class="btn-area">
-			<img alt="상품이미지 ${item.name}" src="/item/display?id=${item.id}">
+		<div class="main-info-section">
+			<div class="image-area">
+				<img alt="상품이미지 ${item.name}" src="/item/display?id=${item.id}">
 			</div>
 			
-		<div class="btn-area">
-			<a href="/item/itemList" class="btn btn-list">상품목록 리스트</a>
-
-			<div class="btn-group">
-				<a href="/item/updateForm?id=${item.id}" class="btn btn-edit">상품
-					수정하기</a> <a href="/item/delete?id=${item.id}"
-					class="btn btn-delete" onclick="return confirm('정말 삭제하시겠습니까?')">회원
-					삭제하기</a>
+			<div class="info-area">
+				<span class="post-no">PRODUCT ID: ${item.id}</span>
+				<h1>${item.name}</h1>
+				
+				<div class="price-box">
+					<span class="price-label">LIST PRICE</span>
+					<span class="price-value">$ ${item.price}</span>
+				</div>
 			</div>
 		</div>
 
-		<div class="footer-deco">[ DATA ARCHIVE: T1 COMMUNITY SECURE
-			TERMINAL ]</div>
+		<div class="btn-area">
+			<a href="/item/itemList" class="btn btn-list">← 상품목록 리스트</a>
+
+			<div class="btn-group">
+				<a href="/item/updateForm?id=${item.id}" class="btn btn-edit">상품 수정하기</a> 
+				<a href="/item/delete?id=${item.id}" class="btn btn-cancel">상품 삭제하기</a>
+			</div>
+		</div>
+
+		<div class="footer-deco">[ SYSTEM: T1 COMMUNITY SECURE TERMINAL v2.6 ]</div>
 	</div>
 
 </body>
